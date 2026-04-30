@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evidence Integrity Validator</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-inner">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1>Evidence Integrity Validator</h1>
+                    <span class="badge">v1.0</span>
+                </div>
+            </div>
+            <div class="header-status">
+                <span class="status-dot"></span> System Ready
+            </div>
+        </div>
+    </header>
+
+    <main class="container main-grid">
+        <!-- Left Column: Case Info + Drop Zone -->
+        <div class="col-left">
+            <!-- Case Config -->
+            <section class="card" id="case-config">
+                <div class="card-header">
+                    <h2>📋 Case Information</h2>
+                </div>
+                <div class="card-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="case_ref">Case Reference</label>
+                            <input type="text" id="case_ref" placeholder="e.g. CASE-2026-001" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label for="examiner">Examiner Name</label>
+                            <input type="text" id="examiner" placeholder="Your full name" class="form-input">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="agency">Agency / Company</label>
+                            <input type="text" id="agency" placeholder="e.g. Metropolitan Police" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label for="hash-algo">Hash Algorithm</label>
+                            <select id="hash-algo" class="form-input">
+                                <option value="sha256">SHA-256</option>
+                                <option value="sha1">SHA-1</option>
+                                <option value="sha512">SHA-512</option>
+                                <option value="md5">MD5</option>
+                                <option value="blake2b">BLAKE2b</option>
+                                <option value="sha384">SHA-384</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn btn-sm btn-outline" onclick="saveConfig()">Save Configuration</button>
+                </div>
+            </section>
+
+            <!-- Drop Zone -->
+            <section class="card" id="dropzone-card">
+                <div class="card-header">
+                    <h2>📁 Drop Files</h2>
+                    <span class="file-count" id="file-count">0 files</span>
+                </div>
+                <div class="card-body">
+                    <div class="drop-zone" id="dropzone">
+                        <div class="drop-zone-content">
+                            <div class="drop-icon">
+                                <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                                    <polyline points="17 8 12 3 7 8"/>
+                                    <line x1="12" y1="3" x2="12" y2="15"/>
+                                </svg>
+                            </div>
+                            <h3>Drag & drop files here</h3>
+                            <p>or <a href="#" onclick="document.getElementById('file-input').click(); return false;">browse files</a></p>
+                            <input type="file" id="file-input" multiple style="display:none" onchange="handleFileSelect(this)">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- File List -->
+            <section class="card" id="files-card" style="display:none;">
+                <div class="card-header">
+                    <h2>📂 Loaded Files</h2>
+                    <button class="btn btn-sm btn-danger" onclick="clearAll()">Clear All</button>
+                </div>
+                <div class="card-body" id="file-list"></div>
+            </section>
+        </div>
+
+        <!-- Right Column: Actions + Results -->
+        <div class="col-right">
+            <!-- Actions -->
+            <section class="card">
+                <div class="card-header">
+                    <h2>⚡ Actions</h2>
+                </div>
+                <div class="card-body">
+                    <div class="action-buttons">
+                        <button class="btn btn-primary btn-block" onclick="hashFiles()" id="btn-hash">
+                            🔍 Compute Hashes
+                        </button>
+                        <div class="verify-row">
+                            <input type="text" id="verify-hash" class="form-input" placeholder="Paste expected hash to verify">
+                            <button class="btn btn-secondary" onclick="verifyFromSelected()">Verify</button>
+                        </div>
+                        <button class="btn btn-accent btn-block" onclick="generateReport()" id="btn-report">
+                            📄 Generate Report (PDF)
+                        </button>
+                        <button class="btn btn-outline btn-block" onclick="exportCSV()">
+                            📊 Export CSV
+                        </button>
+                    </div>
+                    <div class="progress-bar" id="progress" style="display:none;">
+                        <div class="progress-fill" id="progress-fill"></div>
+                        <span id="progress-text">Processing...</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Results -->
+            <section class="card" id="results-card" style="display:none;">
+                <div class="card-header">
+                    <h2>📊 Results</h2>
+                    <button class="btn btn-sm btn-outline" onclick="clearResults()">Clear</button>
+                </div>
+                <div class="card-body" id="results-body"></div>
+            </section>
+
+            <!-- Metadata Preview -->
+            <section class="card" id="metadata-card" style="display:none;">
+                <div class="card-header">
+                    <h2>🔎 Metadata</h2>
+                </div>
+                <div class="card-body" id="metadata-body"></div>
+            </section>
+        </div>
+    </main>
+
+    <!-- File detail modal -->
+    <div class="modal-overlay" id="modal" style="display:none;" onclick="closeModal(event)">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">File Details</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modal-body"></div>
+        </div>
+    </div>
+
+    <!-- Toast notification -->
+    <div class="toast" id="toast"></div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

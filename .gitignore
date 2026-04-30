@@ -1,0 +1,14 @@
+# Evidence Integrity Validator
+venv/
+__pycache__/
+*.pyc
+build/
+dist/
+*.spec
+uploads/
+reports/
+output/
+.license
+.DS_Store
+*.exe
+*.dmg

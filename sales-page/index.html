@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evidence Integrity Validator - Forensic File Integrity Tool</title>
+    <style>
+        :root {
+            --primary: #1a1a2e;
+            --accent: #e94560;
+            --bg: #0f0f1a;
+            --card: #1a1a2e;
+            --text: #e0e0e0;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            padding: 80px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(233,69,96,0.08) 0%, transparent 60%);
+            animation: rotate 30s linear infinite;
+        }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .hero-content { position: relative; z-index: 1; }
+        .hero-badge {
+            display: inline-block;
+            background: rgba(233,69,96,0.2);
+            color: var(--accent);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            border: 1px solid rgba(233,69,96,0.3);
+        }
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+        }
+        .hero h1 span { color: var(--accent); }
+        .hero p {
+            font-size: 18px;
+            max-width: 600px;
+            margin: 0 auto 30px;
+            opacity: 0.7;
+        }
+        .hero-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+        .btn {
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            display: inline-block;
+        }
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(233,69,96,0.3); }
+        .btn-outline {
+            border: 2px solid rgba(255,255,255,0.2);
+            color: white;
+        }
+        .btn-outline:hover { border-color: var(--accent); }
+        .price {
+            font-size: 36px;
+            font-weight: 800;
+            color: white;
+        }
+        .price small {
+            font-size: 16px;
+            font-weight: 400;
+            opacity: 0.5;
+        }
+
+        /* Features */
+        .features {
+            padding: 80px 0;
+            background: #111122;
+        }
+        .features h2 {
+            text-align: center;
+            font-size: 32px;
+            margin-bottom: 50px;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+        .feature-card {
+            background: var(--card);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.06);
+            transition: transform 0.2s;
+        }
+        .feature-card:hover { transform: translateY(-4px); }
+        .feature-icon { font-size: 32px; margin-bottom: 16px; }
+        .feature-card h3 { font-size: 18px; margin-bottom: 10px; }
+        .feature-card p { font-size: 14px; opacity: 0.6; line-height: 1.7; }
+
+        /* Screenshots */
+        .screenshots {
+            padding: 80px 0;
+        }
+        .screenshots h2 { text-align: center; font-size: 32px; margin-bottom: 16px; }
+        .screenshots > p { text-align: center; opacity: 0.6; margin-bottom: 40px; }
+        .screenshot-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .screenshot-card {
+            background: var(--card);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .screenshot-card .placeholder {
+            height: 250px;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            opacity: 0.3;
+        }
+        .screenshot-card .caption {
+            padding: 16px;
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        /* Comparison */
+        .comparison {
+            padding: 80px 0;
+            background: #111122;
+        }
+        .comparison h2 { text-align: center; font-size: 32px; margin-bottom: 40px; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 14px 20px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            font-size: 14px;
+        }
+        th {
+            background: var(--card);
+            font-weight: 600;
+        }
+        .check { color: #10b981; }
+        .cross { color: #ef4444; opacity: 0.4; }
+        .highlight {
+            background: rgba(233,69,96,0.08);
+            border-left: 3px solid var(--accent);
+        }
+
+        /* CTA */
+        .cta {
+            padding: 80px 0;
+            text-align: center;
+            background: linear-gradient(135deg, #1a1a2e, #0f3460);
+        }
+        .cta h2 { font-size: 36px; margin-bottom: 12px; }
+        .cta p { opacity: 0.7; margin-bottom: 30px; font-size: 18px; }
+        .cta .price-block {
+            background: rgba(0,0,0,0.3);
+            display: inline-block;
+            padding: 20px 40px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 0;
+            text-align: center;
+            opacity: 0.4;
+            font-size: 13px;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 32px; }
+            .feature-grid, .screenshot-grid { grid-template-columns: 1fr; }
+            .hero-actions { flex-direction: column; }
+            .btn { width: 100%; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container hero-content">
+            <div class="hero-badge">🚀 Now Available</div>
+            <h1>Evidence Integrity <span>Validator</span></h1>
+            <p>Professional forensic file integrity checking for investigators, law enforcement, and cybersecurity professionals. Simple. Fast. Court-ready.</p>
+            <div class="price-block">
+                <div class="price">£39.99 <small>one-time payment</small></div>
+                <p style="font-size:14px;margin-top:6px;">Free updates. No subscription. Lifetime license.</p>
+            </div>
+            <div class="hero-actions">
+                <a href="#buy" class="btn btn-primary">Buy Now — £39.99</a>
+                <a href="#demo" class="btn btn-outline">Live Demo →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features">
+        <div class="container">
+            <h2>Everything you need for evidence integrity</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Multi-Algorithm Hashing</h3>
+                    <p>Compute MD5, SHA1, SHA256, SHA512, and BLAKE2b hashes with drag-and-drop simplicity. Verify files against known hashes instantly.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔎</div>
+                    <h3>Deep Metadata Extraction</h3>
+                    <p>Extract EXIF data from images (including GPS coordinates), document metadata from PDFs and Office files, and video file information.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📄</div>
+                    <h3>Court-Ready PDF Reports</h3>
+                    <p>Generate professional forensic reports with chain of custody, case information, examiner details, and certification sections. Ready for evidence submission.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Drag & Drop Interface</h3>
+                    <p>No command line needed. Drag files, get hashes, extract metadata, generate reports — all in a clean, intuitive interface.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Offline & Secure</h3>
+                    <p>Works completely offline. No internet connection required — crucial for secure forensic environments. Your data never leaves your machine.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>CSV Export & Bulk Scan</h3>
+                    <p>Export hash results to CSV for spreadsheets. Process entire folders of files with the bulk scan feature.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comparison -->
+    <section class="comparison">
+        <div class="container">
+            <h2>How we compare</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Evidence Validator</th>
+                        <th>FTK Imager</th>
+                        <th>HashMyFiles</th>
+                        <th>QuickHash</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="highlight">
+                        <td>Price</td>
+                        <td><strong>£39.99</strong></td>
+                        <td>Free</td>
+                        <td>Free</td>
+                        <td>Free</td>
+                    </tr>
+                    <tr>
+                        <td>Multi-algorithm hashing</td>
+                        <td class="check">✅</td>
+                        <td class="check">✅</td>
+                        <td class="check">✅</td>
+                        <td class="check">✅</td>
+                    </tr>
+                    <tr>
+                        <td>Drag & drop</td>
+                        <td class="check">✅</td>
+                        <td class="cross">❌</td>
+                        <td class="check">✅</td>
+                        <td class="cross">❌</td>
+                    </tr>
+                    <tr>
+                        <td>EXIF / metadata extraction</td>
+                        <td class="check">✅</td>
+                        <td class="check">✅</td>
+                        <td class="cross">❌</td>
+                        <td class="cross">❌</td>
+                    </tr>
+                    <tr>
+                        <td>GPS coordinate extraction</td>
+                        <td class="check">✅</td>
+                        <td class="cross">❌</td>
+                        <td class="cross">❌</td>
+                        <td class="cross">❌</td>
+                    </tr>
+                    <tr>
+                        <td>Court-ready PDF report</td>
+                        <td class="check">✅</td>
+                        <td class="cross">❌</td>
+                        <td class="cross">❌</td>
+                        <td class="cross">❌</td>
+                    </tr>
+                    <tr>
+                        <td>Chain of custody</td>
+                        <td class="check">✅</td>
+                        <td class="cross">❌</td>
+                        <td class="cross">❌</td>
+                        <td class="cross">❌</td>
+                    </tr>
+                    <tr>
+                        <td>Hash verification</td>
+                        <td class="check">✅</td>
+                        <td class="check">✅</td>
+                        <td class="check">✅</td>
+                        <td class="check">✅</td>
+                    </tr>
+                    <tr>
+                        <td>Modern UI</td>
+                        <td class="check">✅</td>
+                        <td class="cross">❌</td>
+                        <td class="cross">❌</td>
+                        <td class="cross">❌</td>
+                    </tr>
+                    <tr>
+                        <td>Works offline</td>
+                        <td class="check">✅</td>
+                        <td class="check">✅</td>
+                        <td class="check">✅</td>
+                        <td class="check">✅</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta" id="buy">
+        <div class="container">
+            <h2>Ready to streamline your evidence workflow?</h2>
+            <p>Join forensic professionals who trust Evidence Integrity Validator.</p>
+            <div class="price-block">
+                <div class="price">£39.99</div>
+                <p style="font-size:14px;margin-top:4px;">Lifetime license · Free updates · No subscription</p>
+            </div>
+            <a href="#" class="btn btn-primary" style="font-size:18px;padding:16px 48px;">
+                Buy Now — £39.99
+            </a>
+            <p style="margin-top:16px;font-size:13px;opacity:0.5;">
+                🔒 Secure payment via Stripe · Instant download · 14-day money-back guarantee
+            </p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>Evidence Integrity Validator v1.0. © 2026. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
