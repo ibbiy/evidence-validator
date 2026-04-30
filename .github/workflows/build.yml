@@ -25,7 +25,7 @@ jobs:
       - name: Build executable
         shell: pwsh
         run: |
-          pyinstaller evidence-validator.spec --clean --onefile
+          pyinstaller evidence-validator.spec --clean
 
       - name: Upload executable
         uses: actions/upload-artifact@v4
