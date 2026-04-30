@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Evidence Integrity Validator - User Manual</title>
+<style>
+@page { size: A4; margin: 2cm; }
+body { font-family: 'Segoe UI', Arial, sans-serif; color: #1a1a2e; line-height: 1.7; max-width: 800px; margin: 0 auto; padding: 20px; }
+h1 { color: #e94560; font-size: 28px; border-bottom: 3px solid #1a1a2e; padding-bottom: 10px; }
+h2 { color: #1a1a2e; font-size: 20px; margin-top: 30px; border-left: 4px solid #e94560; padding-left: 12px; }
+h3 { color: #0f3460; font-size: 16px; margin-top: 20px; }
+.diagram { text-align: center; margin: 20px 0; }
+.diagram img { max-width: 100%; border: 1px solid #ddd; border-radius: 8px; }
+.step { background: #f9fafb; border-left: 4px solid #e94560; padding: 12px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; }
+.step strong { color: #e94560; }
+code { background: #f0f2f5; padding: 2px 6px; border-radius: 4px; font-size: 13px; font-family: 'Courier New', monospace; }
+.note { background: #fff3cd; border: 1px solid #ffc107; padding: 10px 14px; border-radius: 8px; margin: 15px 0; font-size: 14px; }
+.tip { background: #d1fae5; border: 1px solid #10b981; padding: 10px 14px; border-radius: 8px; margin: 15px 0; font-size: 14px; }
+table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+th { background: #1a1a2e; color: white; padding: 10px; text-align: left; font-size: 13px; }
+td { padding: 8px 10px; border-bottom: 1px solid #ddd; font-size: 13px; }
+tr:nth-child(even) { background: #f9fafb; }
+.page-break { page-break-before: always; }
+.cover { text-align: center; padding-top: 100px; }
+.cover h1 { font-size: 36px; border: none; }
+.cover .subtitle { font-size: 18px; color: #666; margin-top: 10px; }
+.cover .version { font-size: 14px; color: #999; margin-top: 20px; }
+</style>
+</head>
+<body>
+
+<!-- Cover -->
+<div class="cover">
+<h1>⚖️ Evidence Integrity Validator</h1>
+<div class="subtitle">Professional Forensic File Integrity Checking Tool</div>
+<div class="version">User Manual — Version 1.0</div>
+<div style="margin-top:40px;color:#999;font-size:13px;">
+For Windows · Works offline · No installation required
+</div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- Table of Contents -->
+<h1>Table of Contents</h1>
+<ol>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#quick-start">Quick Start Guide</a></li>
+<li><a href="#features">Features Explained</a></li>
+<li><a href="#hashing">File Hashing</a></li>
+<li><a href="#metadata">Metadata Extraction</a></li>
+<li><a href="#verification">Hash Verification</a></li>
+<li><a href="#reports">Report Generation</a></li>
+<li><a href="#troubleshooting">Troubleshooting</a></li>
+<li><a href="#license">License & Support</a></li>
+</ol>
+
+<div class="page-break"></div>
+
+<!-- Section 1: Overview -->
+<h1 id="overview">1. Overview</h1>
+<p>The <strong>Evidence Integrity Validator</strong> is a forensic tool designed for digital investigators, law enforcement professionals, and cybersecurity experts. It allows you to:</p>
+<ul>
+<li>Compute cryptographic hashes of files (MD5, SHA1, SHA256, SHA512, BLAKE2b)</li>
+<li>Extract metadata from images (including GPS coordinates), PDFs, and Office documents</li>
+<li>Verify files against known hash values</li>
+<li>Generate court-ready PDF reports with chain of custody</li>
+<li>Export results to CSV for spreadsheets</li>
+</ul>
+
+<div class="tip">
+<strong>Key Benefit:</strong> Everything works offline — no internet connection required. Your evidence never leaves your machine.
+</div>
+
+<!-- Section 2: Installation -->
+<h1 id="installation">2. Installation</h1>
+
+<h2>System Requirements</h2>
+<table>
+<tr><td>Operating System</td><td>Windows 10 or Windows 11</td></tr>
+<tr><td>RAM</td><td>512 MB minimum (2 GB recommended)</td></tr>
+<tr><td>Disk Space</td><td>150 MB for the application</td></tr>
+<tr><td>Internet</td><td>Not required for operation</td></tr>
+</table>
+
+<h2>Installation Steps</h2>
+<div class="step">
+<strong>Step 1:</strong> Download the <code>EvidenceValidator.exe</code> file from the link provided by your distributor.
+</div>
+<div class="step">
+<strong>Step 2:</strong> Double-click the <code>.exe</code> file to run it.
+</div>
+<div class="step">
+<strong>Step 3:</strong> If Windows SmartScreen shows a warning, click <strong>"More info"</strong> then <strong>"Run anyway"</strong>. This is normal for new software — the program is safe.
+</div>
+<div class="step">
+<strong>Step 4:</strong> Your default web browser will open showing the main interface at <code>http://localhost:8081</code>.
+</div>
+
+<div class="note">
+<strong>Note:</strong> The application runs as a local web server on your machine only. No data is sent anywhere. Close the terminal window to stop the program.
+</div>
+
+<div class="page-break"></div>
+
+<!-- Section 3: Quick Start -->
+<h1 id="quick-start">3. Quick Start Guide</h1>
+
+<div class="diagram">
+<img src="workflow.png" style="width:100%;max-width:680px;" alt="4-step workflow diagram showing: Drop Files -> Compute Hash -> Review Results -> Export Report" style="width:100%;max-width:700px;">
+</div>
+
+<div class="step"><strong>Step 1 — Drop Files:</strong> Drag and drop any files into the dashed box on the left panel, or click "browse files" to select them.</div>
+<div class="step"><strong>Step 2 — Compute Hashes:</strong> Select your hash algorithm (SHA256 is recommended) and click the <strong>"Compute Hashes"</strong> button.</div>
+<div class="step"><strong>Step 3 — Review Results:</strong> Each file shows its hash value, file size, and last modified date. Green badges indicate verified matches.</div>
+<div class="step"><strong>Step 4 — Generate Report:</strong> Click <strong>"Generate Report (PDF)"</strong> to create a court-ready PDF. The report downloads automatically.</div>
+
+<div class="tip">
+<strong>Pro Tip:</strong> Fill in the Case Information fields first (Case Reference, Examiner Name, Agency) — this information will appear on your PDF report.
+</div>
+
+<div class="page-break"></div>
+
+<!-- Section 4: Interface -->
+<h1 id="features">4. Features Explained</h1>
+
+<div class="diagram">
+<img src="interface.png" style="width:100%;max-width:680px;" alt="Interface diagram showing the main screen layout" style="width:100%;max-width:700px;">
+</div>
+
+<h2>Main Screen Layout</h2>
+<table>
+<tr><th>Area</th><th>Description</th></tr>
+<tr><td>📋 Case Information</td><td>Enter case reference, your name, and agency — printed on reports</td></tr>
+<tr><td>📁 Drop Files</td><td>Drag & drop area or browse to select files for analysis</td></tr>
+<tr><td>📂 Loaded Files</td><td>Shows all files added to the current session</td></tr>
+<tr><td>⚡ Actions</td><td>Compute hashes, verify, generate reports, export CSV</td></tr>
+<tr><td>📊 Results</td><td>Displays computed hashes, file info, and verification status</td></tr>
+<tr><td>🔎 Metadata</td><td>Opens when you click "Metadata" on any result</td></tr>
+</table>
+
+<div class="page-break"></div>
+
+<!-- Section 5: Hashing -->
+<h1 id="hashing">5. File Hashing</h1>
+
+<p>Hashing creates a unique digital fingerprint of a file. Even a single character change in the file produces a completely different hash.</p>
+
+<h2>Supported Algorithms</h2>
+<table>
+<tr><th>Algorithm</th><th>Hash Length</th><th>Use Case</th></tr>
+<tr><td>MD5</td><td>32 characters</td><td>Legacy compatibility (not recommended for security)</td></tr>
+<tr><td>SHA-1</td><td>40 characters</td><td>Legacy systems</td></tr>
+<tr><td><strong>SHA-256</strong></td><td><strong>64 characters</strong></td><td><strong>Recommended — Industry standard</strong></td></tr>
+<tr><td>SHA-384</td><td>96 characters</td><td>High-security applications</td></tr>
+<tr><td>SHA-512</td><td>128 characters</td><td>Maximum security</td></tr>
+<tr><td>BLAKE2b</td><td>128 characters</td><td>Fast, modern alternative</td></tr>
+</table>
+
+<h2>How to Hash Files</h2>
+<ol>
+<li>Select your desired algorithm from the dropdown menu (SHA-256 is the default)</li>
+<li>Ensure your files are loaded in the file list</li>
+<li>Click <strong>"Compute Hashes"</strong></li>
+<li>Results appear in the right panel — each file shows its unique hash</li>
+<li>Click on any hash value to select it for copying</li>
+</ol>
+
+<div class="tip">
+<strong>Why SHA-256?</strong> SHA-256 is the industry standard for digital forensics. It's used by law enforcement agencies worldwide and is recognized in court proceedings.
+</div>
+
+<div class="page-break"></div>
+
+<!-- Section 6: Metadata -->
+<h1 id="metadata">6. Metadata Extraction</h1>
+
+<p>Files contain hidden information called metadata. The Evidence Validator can extract this data to help your investigation.</p>
+
+<h2>What Can Be Extracted</h2>
+
+<h3>📷 Images (JPEG, PNG, TIFF)</h3>
+<ul>
+<li>Camera make and model</li>
+<li>Date and time taken</li>
+<li>GPS coordinates (latitude/longitude)</li>
+<li>Image dimensions and resolution</li>
+<li>Software used to edit the image</li>
+<li>Flash settings, focal length, ISO</li>
+</ul>
+
+<h3>📄 PDF Documents</h3>
+<ul>
+<li>Author name</li>
+<li>Creation and modification dates</li>
+<li>Software used to create the PDF</li>
+<li>Number of pages</li>
+<li>Document title and subject</li>
+</ul>
+
+<h3>📝 Office Documents (DOCX, XLSX, PPTX)</h3>
+<ul>
+<li>Author and last modified by</li>
+<li>Creation and modification dates</li>
+<li>Revision number</li>
+<li>Company name</li>
+</ul>
+
+<h2>How to View Metadata</h2>
+<ol>
+<li>Hash your files first (see Section 5)</li>
+<li>In the results panel, click <strong>"Metadata"</strong> on any file</li>
+<li>The metadata panel opens below showing all extracted information</li>
+<li>For images with GPS data, a Google Maps link is automatically generated</li>
+</ol>
+
+<div class="page-break"></div>
+
+<!-- Section 7: Verification -->
+<h1 id="verification">7. Hash Verification</h1>
+
+<p>Use this feature to verify that a file matches a known hash value — for example, checking a downloaded file against the hash published by the original source.</p>
+
+<h2>How to Verify a File</h2>
+<div class="step">
+<strong>Step 1:</strong> Load and hash your file (see Section 5).
+</div>
+<div class="step">
+<strong>Step 2:</strong> Paste the expected hash value into the verification box below the "Compute Hashes" button.
+</div>
+<div class="step">
+<strong>Step 3:</strong> Click <strong>"Verify"</strong>.
+</div>
+
+<p>The result will show one of two outcomes:</p>
+<ul>
+<li><strong style="color:#10b981;">✅ MATCH</strong> — The file is authentic and has not been modified</li>
+<li><strong style="color:#ef4444;">❌ MISMATCH</strong> — The file has been altered or corrupted since the original hash was created</li>
+</ul>
+
+<div class="note">
+<strong>Important:</strong> The verification tool auto-detects the hash algorithm based on the length of the hash you paste (e.g., 64 characters = SHA-256).
+</div>
+
+<div class="page-break"></div>
+
+<!-- Section 8: Reports -->
+<h1 id="reports">8. Report Generation</h1>
+
+<p>The Evidence Validator produces professional forensic reports suitable for submission as evidence in legal proceedings.</p>
+
+<h2>What's Included in the PDF Report</h2>
+<ul>
+<li><strong>Case Information:</strong> Case reference, examiner name, agency, date</li>
+<li><strong>Chain of Custody:</strong> Timestamped record of when files were examined</li>
+<li><strong>File Details:</strong> Name, path, size, last modified date for each file</li>
+<li><strong>Hash Values:</strong> Full hash for each file with algorithm specified</li>
+<li><strong>Verification Results:</strong> Match/mismatch status if verification was performed</li>
+<li><strong>Extracted Metadata:</strong> All discovered metadata for each file</li>
+<li><strong>Certification Section:</strong> Signed statement from the examiner</li>
+</ul>
+
+<h2>How to Generate a Report</h2>
+<ol>
+<li>Fill in the Case Information fields (Case Reference, Examiner, Agency)</li>
+<li>Load and hash your files</li>
+<li>Click <strong>"Generate Report (PDF)"</strong></li>
+<li>The PDF downloads automatically</li>
+</ol>
+
+<h2>Exporting to CSV</h2>
+<p>For spreadsheet analysis, click <strong>"Export CSV"</strong> after hashing. This saves the file hashes to a CSV file that can be opened in Excel.</p>
+
+<div class="page-break"></div>
+
+<!-- Section 9: Troubleshooting -->
+<h1 id="troubleshooting">9. Troubleshooting</h1>
+
+<h2>Application won't start</h2>
+<table>
+<tr><th>Problem</th><th>Solution</th></tr>
+<tr><td>Windows SmartScreen warning</td><td>Click "More info" → "Run anyway"</td></tr>
+<tr><td>Nothing happens when double-clicking</td><td>Try running as Administrator (right-click → Run as administrator)</td></tr>
+<tr><td>Port 8081 already in use</td><td>Close other applications that might use this port</td></tr>
+</table>
+
+<h2>Browser doesn't open</h2>
+<p>Manually open your browser and go to: <code>http://localhost:8081</code></p>
+
+<h2>Large files are slow</h2>
+<p>Very large files (GB+) take longer to hash. This is normal — the file must be read entirely. Allow time for files over 1GB.</p>
+
+<h2>Can't copy hash values</h2>
+<p>Click directly on the hash text to select it, then press Ctrl+C (Windows) to copy.</p>
+
+<h2>Trial limit reached</h2>
+<p>The trial version allows up to 3 files. To process unlimited files, purchase a license from your distributor.</p>
+
+<div class="page-break"></div>
+
+<!-- Section 10: License -->
+<h1 id="license">10. License & Support</h1>
+
+<h2>Trial Mode</h2>
+<p>The trial version allows you to process up to <strong>3 files</strong> per session. This lets you fully evaluate the tool before purchasing.</p>
+
+<h2>Licensed Version</h2>
+<p>After purchasing, you'll receive a license key that unlocks:</p>
+<ul>
+<li>Unlimited file processing</li>
+<li>Clean, unwatermarked PDF reports</li>
+<li>Free updates for the lifetime of version 1.x</li>
+</ul>
+
+<h2>Contact & Support</h2>
+<p>To purchase a license or get support:</p>
+<p><strong>Email:</strong> ibbiy@icloud.com</p>
+
+<h2>Best Practices</h2>
+<ul>
+<li>Always hash files immediately after acquisition to establish a baseline</li>
+<li>Store hash values separately from the files themselves</li>
+<li>Use SHA-256 as your default algorithm unless a specific standard requires otherwise</li>
+<li>Include chain of custody information in every report</li>
+<li>Keep the PDF reports as part of your case evidence archive</li>
+</ul>
+
+<div style="text-align:center;margin-top:50px;padding-top:20px;border-top:2px solid #1a1a2e;color:#999;font-size:12px;">
+Evidence Integrity Validator v1.0 — User Manual<br>
+© 2026. All rights reserved.
+</div>
+
+</body>
+</html>

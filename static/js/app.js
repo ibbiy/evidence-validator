@@ -2,6 +2,15 @@
 
 let currentResults = [];
 
+// ===== PWA - Register Service Worker =====
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/static/sw.js')
+            .then(() => console.log('PWA: Service Worker registered'))
+            .catch(() => console.log('PWA: Service Worker not supported'));
+    });
+}
+
 // ===== INIT =====
 document.addEventListener("DOMContentLoaded", () => {
     loadConfig();

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head><title>Download Evidence Validator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="/manifest.json">
+<style>
+body { font-family: -apple-system, sans-serif; background: #1a1a2e; color: #e0e0e0; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; }
+.card { background: #16213e; padding: 40px; border-radius: 16px; max-width: 500px; text-align: center; }
+h1 { color: #e94560; }
+h2 { color: #8899aa; font-size: 16px; margin: 20px 0 10px; }
+.btn { display: inline-block; padding: 16px 40px; background: #e94560; color: white; text-decoration: none; border-radius: 8px; font-size: 18px; font-weight: 600; margin: 10px 0; }
+.btn:hover { background: #d63850; }
+.btn-small { display: inline-block; padding: 10px 24px; background: #0f3460; color: white; text-decoration: none; border-radius: 8px; font-size: 14px; margin: 5px; }
+.btn-small:hover { background: #1a4a80; }
+.btn2 { display: inline-block; padding: 12px 30px; background: transparent; color: #8899aa; text-decoration: none; border-radius: 8px; font-size: 14px; border: 1px solid #334; margin: 8px; }
+.btn2:hover { color: white; border-color: #e94560; }
+.note { font-size: 12px; opacity: 0.5; margin-top: 10px; }
+hr { border: none; border-top: 1px solid #223; margin: 20px 0; }
+.platform { margin: 15px 0; }
+</style>
+</head>
+<body>
+<div class="card">
+<h1>⚖️ Evidence Integrity Validator</h1>
+<p>Version 1.0 | Offline</p>
+
+<hr>
+
+<div class="platform">
+<h2>💻 Windows</h2>
+<a class="btn-small" href="EvidenceValidator.exe" download>⬇️ Download .exe (20 MB)</a>
+</div>
+
+<div class="platform">
+<h2>🍎 macOS</h2>
+<a class="btn-small" href="#" onclick="alert('macOS build coming soon from GitHub Actions!'); return false;">⬇️ Download .app</a>
+<p class="note">Or run: python3 app.py (requires Python)</p>
+</div>
+
+<div class="platform">
+<h2>📱 iPhone / iPad</h2>
+<p style="font-size:14px;color:#8899aa;">This app works as a PWA.</p>
+<p style="font-size:13px;color:#667;">Open this page → Safari Share →<br><strong>"Add to Home Screen"</strong></p>
+</div>
+
+<div class="platform">
+<h2>🤖 Android</h2>
+<p style="font-size:13px;color:#667;">Open in Chrome → Menu →<br><strong>"Add to Home screen"</strong></p>
+</div>
+
+<hr>
+
+<a class="btn2" href="manual.pdf" target="_blank">📖 User Manual (PDF)</a>
+<p class="note">Free trial: 3 files · Purchase: Email ibbiy@icloud.com</p>
+</div>
+</body>
+</html>
