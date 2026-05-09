@@ -268,6 +268,36 @@ def _generate_pdf_report(data: dict, output_path: str):
                     styles["MetaValue"]
                 ))
 
+            # GPS / Maps link
+            gps = None
+            if isinstance(meta, dict):
+                md = meta.get("metadata", {}) if isinstance(meta, dict) else {}
+                if md:
+                    gps = md.get("gps_coordinates", None)
+                if not gps and isinstance(meta, dict):
+                    # Try direct path
+                    gps = meta.get("gps_coordinates", None)
+            if gps and gps.get("latitude") and gps.get("longitude"):
+                lat = gps["latitude"]
+                lon = gps["longitude"]
+                maps_url = f"https://www.google.com/maps?q={lat},{lon}"
+                place = gps.get("place_name", "")
+                elements.append(Spacer(1, 4))
+                elements.append(Paragraph(
+                    f'📍 <b>GPS Location:</b>',
+                    styles["FieldLabel"]
+                ))
+                if place:
+                    elements.append(Paragraph(
+                        f'<font size="8.5" color="#555555">{place}</font>',
+                        styles["MetaValue"]
+                    ))
+                elements.append(Paragraph(
+                    f'<font face="Courier" size="8" color="#2244aa"><u>{lat}, {lon} — '
+                    f'<a href="{maps_url}" color="#2244aa">Open in Google Maps</a></u></font>',
+                    styles["MetaKey"]
+                ))
+
         elements.append(Spacer(1, 8))
 
         if idx < len(files):
@@ -350,6 +380,21 @@ def _generate_txt_report(data: dict, output_path: str):
         if "expected" in fdata:
             status = "✅ VERIFIED" if fdata.get("match") else "❌ MISMATCH"
             lines.append(f"  Verification: {status}")
+        # GPS / Maps link
+        meta = fdata.get("metadata", {})
+        if isinstance(meta, dict):
+            md = meta.get("metadata", {}) if isinstance(meta, dict) else {}
+            gps = md.get("gps_coordinates", None) if md else None
+            if not gps:
+                gps = meta.get("gps_coordinates", None)
+            if gps and gps.get("latitude") and gps.get("longitude"):
+                lat = gps["latitude"]
+                lon = gps["longitude"]
+                maps_url = f"https://www.google.com/maps?q={lat},{lon}"
+                lines.append(f"  GPS: {lat}, {lon}")
+                if gps.get("place_name"):
+                    lines.append(f"     Place: {gps['place_name']}")
+                lines.append(f"     Maps: {maps_url}")
         lines.append("")
 
     lines.append("=" * 70)
