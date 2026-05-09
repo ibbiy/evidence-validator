@@ -48,8 +48,8 @@ def extract_metadata(filepath: str) -> dict:
 
 
 def _extract_image_metadata(filepath: str) -> dict:
-    """Extract EXIF and image metadata."""
-    meta = {"basic": {}, "exif": {}}
+    """Extract EXIF and image metadata with full details including GPS reverse geocode."""
+    meta = {"basic": {}, "exif": {}, "highlights": {}}
 
     try:
         from PIL import Image
@@ -63,6 +63,7 @@ def _extract_image_metadata(filepath: str) -> dict:
             "mode": img.mode,
             "width": img.width,
             "height": img.height,
+            "megapixels": round(img.width * img.height / 1000000, 1),
             "size_mb": round(os.path.getsize(filepath) / (1024 * 1024), 2),
         }
 
@@ -78,6 +79,32 @@ def _extract_image_metadata(filepath: str) -> dict:
                         value = str(value)
                 meta["exif"][tag] = str(value)
 
+            # Pull out highlights from EXIF
+            highlights = {}
+            key_fields = {
+                "Make": "Camera Make",
+                "Model": "Camera Model",
+                "DateTimeOriginal": "Date/Time Original",
+                "DateTimeDigitized": "Date/Time Digitized",
+                "DateTime": "Date/Time",
+                "Software": "Software",
+                "Artist": "Artist/Author",
+                "Copyright": "Copyright",
+                "ImageDescription": "Description",
+                "ExposureTime": "Exposure",
+                "FNumber": "Aperture",
+                "ISOSpeedRatings": "ISO",
+                "FocalLength": "Focal Length",
+                "Flash": "Flash",
+                "ExposureProgram": "Exposure Program",
+                "MeteringMode": "Metering Mode",
+                "WhiteBalance": "White Balance",
+                "Orientation": "Orientation",
+            }
+            for exif_key, label in key_fields.items():
+                if exif_key in meta["exif"]:
+                    highlights[label] = meta["exif"][exif_key]
+
             # GPS data
             gps_info = {}
             for tag_id, value in exif.items():
@@ -91,7 +118,17 @@ def _extract_image_metadata(filepath: str) -> dict:
                 # Try to convert to decimal
                 lat, lon = _gps_to_decimal(gps_info)
                 if lat and lon:
-                    meta["gps_coordinates"] = {"latitude": lat, "longitude": lon}
+                    location_data = {"latitude": lat, "longitude": lon}
+                    # Reverse geocode
+                    place_name = _reverse_geocode(lat, lon)
+                    if place_name:
+                        location_data["place_name"] = place_name
+                        highlights["Location"] = place_name
+                    highlights["GPS Coordinates"] = f"{lat}, {lon}"
+                    meta["gps_coordinates"] = location_data
+
+            if highlights:
+                meta["highlights"] = highlights
 
         img.close()
 
@@ -227,6 +264,10 @@ def _gps_to_decimal(gps_info: dict) -> tuple:
     """Convert GPS EXIF coordinates to decimal degrees."""
     try:
         def _to_decimal(dms, ref):
+            # Handle both tuple/list and string representations
+            if isinstance(dms, str):
+                import ast
+                dms = ast.literal_eval(dms)
             degrees = float(dms[0])
             minutes = float(dms[1])
             seconds = float(dms[2])
@@ -242,12 +283,45 @@ def _gps_to_decimal(gps_info: dict) -> tuple:
 
         if lat_dms and lon_dms:
             import ast
-            lat = _to_decimal(ast.literal_eval(lat_dms), lat_ref)
-            lon = _to_decimal(ast.literal_eval(lon_dms), lon_ref)
+            lat = _to_decimal(ast.literal_eval(lat_dms) if isinstance(lat_dms, str) else lat_dms, lat_ref)
+            lon = _to_decimal(ast.literal_eval(lon_dms) if isinstance(lon_dms, str) else lon_dms, lon_ref)
             return (round(lat, 6), round(lon, 6))
     except:
         pass
     return (None, None)
+
+
+def _reverse_geocode(lat: float, lon: float) -> str:
+    """Reverse geocode GPS coordinates to a place name using OpenStreetMap (free, no key needed)."""
+    try:
+        import requests
+        url = "https://nominatim.openstreetmap.org/reverse"
+        params = {
+            "lat": lat,
+            "lon": lon,
+            "format": "json",
+            "addressdetails": 1,
+        }
+        headers = {
+            "User-Agent": "EvidenceValidator/1.0 (forensic-tool)",
+            "Accept-Language": "en",
+        }
+        resp = requests.get(url, params=params, headers=headers, timeout=5)
+        if resp.status_code == 200:
+            data = resp.json()
+            if "display_name" in data:
+                return data["display_name"]
+            if "address" in data:
+                addr = data["address"]
+                parts = []
+                for field in ["road", "neighbourhood", "suburb", "city", "town", "village", "county", "state", "country"]:
+                    if field in addr:
+                        parts.append(addr[field])
+                if parts:
+                    return ", ".join(parts)
+    except:
+        pass
+    return None
 
 
 def _human_size(size_bytes: int) -> str:

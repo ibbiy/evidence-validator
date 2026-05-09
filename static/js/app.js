@@ -263,34 +263,61 @@ function showMetadata(index) {
     let html = "";
 
     if (meta.type === "image") {
-        html += renderMetaSection("Image Info", meta.metadata?.basic || {});
-        html += renderMetaSection("EXIF Data", meta.metadata?.exif || {});
+        // Highlights (key info at the top)
+        if (meta.metadata?.highlights && Object.keys(meta.metadata.highlights).length > 0) {
+            html += `<div class="meta-section" style="background:var(--accent-bg,#1a2a3a);border-left:3px solid var(--accent,#e94560);padding:12px;border-radius:6px;margin-bottom:12px;">
+                <h4 style="color:var(--accent,#e94560);margin-bottom:8px;">⭐ Key Metadata</h4>
+                <div class="meta-grid">`;
+            for (const [key, val] of Object.entries(meta.metadata.highlights)) {
+                html += `<span class="meta-key" style="font-weight:600;">${key}</span><span class="meta-val">${escapeHtml(String(val))}</span>`;
+            }
+            html += `</div></div>`;
+        }
+
+        // GPS Map (if coordinates available)
         if (meta.metadata?.gps_coordinates) {
             const gps = meta.metadata.gps_coordinates;
-            html += `<div class="meta-section"><h4>📍 GPS Coordinates</h4>
+            html += `<div class="meta-section"><h4>📍 Location</h4>
                 <div class="meta-grid">
                     <span class="meta-key">Latitude</span>
                     <span class="meta-val">${gps.latitude}</span>
                     <span class="meta-key">Longitude</span>
-                    <span class="meta-val">${gps.longitude}</span>
-                    <span class="meta-key">Google Maps</span>
+                    <span class="meta-val">${gps.longitude}</span>`;
+            if (gps.place_name) {
+                html += `<span class="meta-key">📍 Place Name</span>
+                    <span class="meta-val">${escapeHtml(gps.place_name)}</span>`;
+            }
+            html += `<span class="meta-key">Google Maps</span>
                     <span class="meta-val"><a href="https://www.google.com/maps?q=${gps.latitude},${gps.longitude}" target="_blank">Open in Maps →</a></span>
+                    <span style="grid-column:1/-1;margin-top:8px;">
+                        <iframe width="100%" height="200" style="border:0;border-radius:6px;" 
+                            loading="lazy" 
+                            src="https://www.google.com/maps/embed/v1/view?key=&center=${gps.latitude},${gps.longitude}&zoom=15&maptype=satellite">
+                        </iframe>
+                    </span>
                 </div></div>`;
         }
+        
+        // Image info
+        html += renderMetaSection("🖼️ Image Info", meta.metadata?.basic || {});
+        
+        // EXIF Data (all)
+        html += renderMetaSection("📋 Full EXIF Data", meta.metadata?.exif || {});
+        
         if (meta.metadata?.gps) {
-            html += renderMetaSection("GPS Raw", meta.metadata.gps);
+            html += renderMetaSection("🛰️ GPS Raw Data", meta.metadata.gps);
         }
     } else if (meta.type === "pdf" || meta.type === "office") {
-        html += renderMetaSection("Document Info", meta.metadata?.info || {});
+        html += renderMetaSection("📄 Document Info", meta.metadata?.info || {});
         if (meta.metadata?.pages) {
             html += `<div class="meta-section"><h4>Document</h4><div class="meta-grid">
                 <span class="meta-key">Pages</span><span class="meta-val">${meta.metadata.pages}</span>
             </div></div>`;
         }
     } else if (meta.type === "video") {
-        html += renderMetaSection("Video Info", meta.metadata?.info || {});
+        html += renderMetaSection("🎬 Video Info", meta.metadata?.info || {});
     } else {
-        html += renderMetaSection("File Info", meta.metadata || {});
+        html += renderMetaSection("📁 File Info", meta.metadata || {});
     }
 
     body.innerHTML = html;
