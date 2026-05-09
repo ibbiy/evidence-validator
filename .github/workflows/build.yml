@@ -6,15 +6,10 @@ on:
     tags:
       - 'v*'
   workflow_dispatch:
-    inputs:
-      create_release:
-        description: 'Create a GitHub Release'
-        type: boolean
-        default: false
 
 jobs:
   build-windows:
-    name: 🪟 Windows (.exe)
+    name: Windows
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -28,8 +23,23 @@ jobs:
           name: EvidenceValidator-Windows
           path: dist/EvidenceValidator.exe
 
+  build-linux:
+    name: Linux
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install pyinstaller flask pillow reportlab PyPDF2
+      - run: pyinstaller evidence-validator.spec --clean
+      - uses: actions/upload-artifact@v4
+        with:
+          name: EvidenceValidator-Linux
+          path: dist/EvidenceValidator
+
   build-macos:
-    name: 🍎 macOS (.app)
+    name: macOS
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
@@ -38,8 +48,8 @@ jobs:
           python-version: '3.12'
       - run: pip install pyinstaller flask pillow reportlab PyPDF2
       - run: pyinstaller evidence-validator.spec --clean
-      - run: |
-          # Create .app bundle structure
+      - name: Bundle .app
+        run: |
           mkdir -p "dist/EvidenceValidator.app/Contents/MacOS"
           mkdir -p "dist/EvidenceValidator.app/Contents/Resources"
           cp dist/EvidenceValidator "dist/EvidenceValidator.app/Contents/MacOS/"
@@ -71,28 +81,9 @@ PLIST
           name: EvidenceValidator-macOS
           path: dist/EvidenceValidator.app
 
-  build-linux:
-    name: 🐧 Linux (binary)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - run: pip install pyinstaller flask pillow reportlab PyPDF2
-      - run: pyinstaller evidence-validator.spec --clean
-      - run: chmod +x dist/EvidenceValidator
-      - uses: actions/upload-artifact@v4
-        with:
-          name: EvidenceValidator-Linux
-          path: dist/EvidenceValidator
-
-  create-release:
-    name: 📦 Create Release
-    needs: [build-windows, build-macos, build-linux]
-    if: |
-      github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') ||
-      (github.event_name == 'workflow_dispatch' && github.event.inputs.create_release == 'true')
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [build-windows, build-linux, build-macos]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -103,25 +94,20 @@ PLIST
           path: release/
       - uses: actions/download-artifact@v4
         with:
-          name: EvidenceValidator-macOS
+          name: EvidenceValidator-Linux
           path: release/
       - uses: actions/download-artifact@v4
         with:
-          name: EvidenceValidator-Linux
-          path: release/
+          name: EvidenceValidator-macOS
+          path: release/macos
       - run: |
-          mv release/EvidenceValidator.exe release/EvidenceValidator-Windows.exe 2>/dev/null || true
-          mv release/EvidenceValidator release/EvidenceValidator-Linux 2>/dev/null || true
-          mkdir -p release/macOS
-          mv release/EvidenceValidator.app release/macOS/ 2>/dev/null || true
-          # Create ZIP for macOS
-          cd release && zip -r EvidenceValidator-macOS.zip macOS/EvidenceValidator.app 2>/dev/null || true
+          ls -la release/
+          cd release && zip -r EvidenceValidator-macOS.zip macos/EvidenceValidator.app 2>/dev/null || true
           ls -la
       - uses: softprops/action-gh-release@v2
         with:
           files: |
-            release/EvidenceValidator-Windows.exe
-            release/EvidenceValidator-Linux
+            release/EvidenceValidator-Windows/EvidenceValidator.exe
+            release/EvidenceValidator-Linux/EvidenceValidator
             release/EvidenceValidator-macOS.zip
-          draft: false
           generate_release_notes: true
