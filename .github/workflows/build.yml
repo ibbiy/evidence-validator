@@ -1,4 +1,4 @@
-name: Build Windows + macOS
+name: Build All Platforms
 
 on:
   push:
@@ -6,9 +6,15 @@ on:
     tags:
       - 'v*'
   workflow_dispatch:
+    inputs:
+      create_release:
+        description: 'Create a GitHub Release'
+        type: boolean
+        default: false
 
 jobs:
   build-windows:
+    name: 🪟 Windows (.exe)
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -23,6 +29,7 @@ jobs:
           path: dist/EvidenceValidator.exe
 
   build-macos:
+    name: 🍎 macOS (.app)
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
@@ -32,11 +39,11 @@ jobs:
       - run: pip install pyinstaller flask pillow reportlab PyPDF2
       - run: pyinstaller evidence-validator.spec --clean
       - run: |
-          # Create .app bundle
+          # Create .app bundle structure
           mkdir -p "dist/EvidenceValidator.app/Contents/MacOS"
           mkdir -p "dist/EvidenceValidator.app/Contents/Resources"
           cp dist/EvidenceValidator "dist/EvidenceValidator.app/Contents/MacOS/"
-          cat > "dist/EvidenceValidator.app/Contents/Info.plist" << EOF
+          cat > "dist/EvidenceValidator.app/Contents/Info.plist" << 'PLIST'
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -51,10 +58,70 @@ jobs:
     <string>1.0.0</string>
     <key>CFBundleShortVersionString</key>
     <string>1.0.0</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>LSMinimumSystemVersion</key>
+    <string>10.15</string>
 </dict>
 </plist>
-EOF
+PLIST
+          chmod +x "dist/EvidenceValidator.app/Contents/MacOS/EvidenceValidator"
       - uses: actions/upload-artifact@v4
         with:
           name: EvidenceValidator-macOS
           path: dist/EvidenceValidator.app
+
+  build-linux:
+    name: 🐧 Linux (binary)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install pyinstaller flask pillow reportlab PyPDF2
+      - run: pyinstaller evidence-validator.spec --clean
+      - run: chmod +x dist/EvidenceValidator
+      - uses: actions/upload-artifact@v4
+        with:
+          name: EvidenceValidator-Linux
+          path: dist/EvidenceValidator
+
+  create-release:
+    name: 📦 Create Release
+    needs: [build-windows, build-macos, build-linux]
+    if: |
+      github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.create_release == 'true')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: EvidenceValidator-Windows
+          path: release/
+      - uses: actions/download-artifact@v4
+        with:
+          name: EvidenceValidator-macOS
+          path: release/
+      - uses: actions/download-artifact@v4
+        with:
+          name: EvidenceValidator-Linux
+          path: release/
+      - run: |
+          mv release/EvidenceValidator.exe release/EvidenceValidator-Windows.exe 2>/dev/null || true
+          mv release/EvidenceValidator release/EvidenceValidator-Linux 2>/dev/null || true
+          mkdir -p release/macOS
+          mv release/EvidenceValidator.app release/macOS/ 2>/dev/null || true
+          # Create ZIP for macOS
+          cd release && zip -r EvidenceValidator-macOS.zip macOS/EvidenceValidator.app 2>/dev/null || true
+          ls -la
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            release/EvidenceValidator-Windows.exe
+            release/EvidenceValidator-Linux
+            release/EvidenceValidator-macOS.zip
+          draft: false
+          generate_release_notes: true
