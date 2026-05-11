@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f0f23"/>
+      <stop offset="100%" style="stop-color:#1a1a3e"/>
+    </linearGradient>
+    <linearGradient id="redGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#e94560"/>
+      <stop offset="100%" style="stop-color:#ff6b81"/>
+    </linearGradient>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a4e"/>
+      <stop offset="100%" style="stop-color:#0a0a1e"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="300" rx="16" fill="url(#bg)"/>
+
+  <!-- Large shield (protection, security) -->
+  <g transform="translate(60, 25)">
+    <!-- Shield body -->
+    <path d="M100 10 L195 50 L195 145 Q195 210 100 240 Q5 210 5 145 L5 50 Z" 
+          fill="url(#shieldGrad)" stroke="url(#redGrad)" stroke-width="4"/>
+    
+    <!-- Inner shield highlight -->
+    <path d="M100 20 L185 55 L185 140 Q185 200 100 228 Q15 200 15 140 L15 55 Z" 
+          fill="none" stroke="url(#redGrad)" stroke-width="0.8" opacity="0.3"/>
+
+    <!-- Fingerprint inside shield (forensics) -->
+    <g transform="translate(100, 120)" stroke="url(#redGrad)" fill="none" stroke-width="2.5" opacity="0.9">
+      <!-- Arcs representing fingerprint ridges -->
+      <path d="M-25,-30 Q-30,-15 -28,0" stroke-width="2"/>
+      <path d="M25,-30 Q30,-15 28,0" stroke-width="2"/>
+      <path d="M-20,-40 Q-25,-25 -22,-10 Q-20,5 -18,15"/>
+      <path d="M20,-40 Q25,-25 22,-10 Q20,5 18,15"/>
+      <path d="M-12,-48 Q-15,-30 -12,-12 Q-8,8 -5,20"/>
+      <path d="M12,-48 Q15,-30 12,-12 Q8,8 5,20"/>
+      <path d="M-3,-50 Q0,-30 3,-10 Q5,10 3,22"/>
+      <ellipse cx="0" cy="-10" rx="28" ry="22" stroke-width="2.5"/>
+      <ellipse cx="0" cy="-10" rx="18" ry="14" stroke-width="2"/>
+      <ellipse cx="0" cy="-10" rx="8" ry="6" stroke-width="1.5"/>
+    </g>
+
+    <!-- Magnifying glass (investigation) -->
+    <g transform="translate(85, 155)" stroke="url(#redGrad)" fill="none" stroke-width="3" opacity="0.7">
+      <circle cx="0" cy="0" r="12"/>
+      <line x1="9" y1="9" x2="20" y2="20" stroke-width="3.5"/>
+    </g>
+
+    <!-- Checkmark (verification) -->
+    <path d="M160 190 L170 205 L195 180" fill="none" stroke="#10b981" stroke-width="5" 
+          stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
+  </g>
+
+  <!-- Brand name -->
+  <text x="290" y="105" font-family="Arial, Helvetica, sans-serif" 
+        font-size="38" font-weight="800" fill="white" letter-spacing="3">EVIDENCE</text>
+  <text x="290" y="148" font-family="Arial, Helvetica, sans-serif" 
+        font-size="38" font-weight="800" fill="url(#redGrad)" letter-spacing="3">| INTEGRITY</text>
+
+  <!-- Tagline -->
+  <text x="292" y="180" font-family="Arial, Helvetica, sans-serif"
+        font-size="10" fill="#667788" letter-spacing="6">FORENSIC FILE VALIDATOR</text>
+
+  <!-- User badges -->
+  <g transform="translate(290, 195)">
+    <rect x="0" y="0" width="55" height="18" rx="9" fill="none" stroke="#334" stroke-width="1"/>
+    <text x="27" y="13" font-family="Arial" font-size="7" fill="#889" text-anchor="middle">LEGAL</text>
+    <rect x="60" y="0" width="55" height="18" rx="9" fill="none" stroke="#334" stroke-width="1"/>
+    <text x="87" y="13" font-family="Arial" font-size="7" fill="#889" text-anchor="middle">POLICE</text>
+    <rect x="120" y="0" width="55" height="18" rx="9" fill="none" stroke="#334" stroke-width="1"/>
+    <text x="147" y="13" font-family="Arial" font-size="7" fill="#889" text-anchor="middle">FORENSIC</text>
+    <rect x="180" y="0" width="60" height="18" rx="9" fill="none" stroke="#334" stroke-width="1"/>
+    <text x="210" y="13" font-family="Arial" font-size="7" fill="#889" text-anchor="middle">CYBER</text>
+  </g>
+
+  <!-- Version -->
+  <text x="292" y="235" font-family="Arial" font-size="8" fill="#334" letter-spacing="2">PROFESSIONAL EDITION  v1.0</text>
+
+  <!-- Bottom accent line -->
+  <rect x="290" y="245" width="240" height="1.5" fill="url(#redGrad)" opacity="0.4"/>
+</svg>

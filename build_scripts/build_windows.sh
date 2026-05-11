@@ -31,12 +31,14 @@ a = Analysis(
     binaries=[],
     datas=[
         ('templates/*.html', 'templates'),
-        ('static/**/*', 'static'),
+        ('static/*', 'static'),
+        ('static/css/*', 'static/css'),
+        ('static/js/*', 'static/js'),
+        ('static/icons/*', 'static/icons'),
         ('tools/*.py', 'tools'),
     ],
-    hiddenimports=['PIL', 'PIL.ExifTags', 'PyPDF2', 'reportlab', 'flask'],
+    hiddenimports=['PIL', 'PIL.ExifTags', 'PyPDF2', 'reportlab', 'flask', 'requests'],
     hookspath=[],
-    hooksconfig={},
     runtime_hooks=[],
     excludes=['tkinter', 'matplotlib', 'numpy', 'scipy', 'pandas'],
     win_no_prefer_redirects=False,
@@ -58,7 +60,7 @@ exe = EXE(
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
-    upx=True,
+    upx=False,
     upx_exclude=[],
     runtime_tmpdir=None,
     console=False,
@@ -72,9 +74,20 @@ exe = EXE(
 SPEC
 
 echo "Building with Docker..."
+echo 'Creating runtime path fix...'
+cat > "$PROJECT_DIR/pyinstaller_hook.py" << 'HOOK'
+import sys
+import os
+
+if getattr(sys, 'frozen', False):
+    # PyInstaller temp directory
+    MEIPASS = sys._MEIPASS
+    os.environ['EVIDENCE_VALIDATOR_MEIPASS'] = MEIPASS
+HOOK
+
 docker run --rm -v "$PROJECT_DIR:/src" \
     cdrx/pyinstaller-windows:latest \
-    "pyinstaller evidence-validator.spec --clean --onefile"
+    "pyinstaller evidence-validator.spec --clean"
 
 echo ""
 echo "✅ Build complete!"

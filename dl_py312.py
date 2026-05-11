@@ -1,0 +1,13 @@
+import urllib.request, zipfile, os, io
+print('Downloading Python 3.12...')
+r = urllib.request.urlopen('https://www.python.org/ftp/python/3.12.0/python-3.12.0-embed-amd64.zip')
+z = zipfile.ZipFile(io.BytesIO(r.read()))
+os.makedirs('C:/python312', exist_ok=True)
+z.extractall('C:/python312')
+print('Extracted')
+pth = open('C:/python312/python312._pth').read().replace('#import site', 'import site')
+open('C:/python312/python312._pth', 'w').write(pth)
+print('Getting pip...')
+r2 = urllib.request.urlopen('https://bootstrap.pypa.io/get-pip.py')
+open('C:/get-pip.py', 'wb').write(r2.read())
+print('Done')

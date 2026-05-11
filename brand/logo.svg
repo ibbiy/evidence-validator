@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f0f23"/>
+      <stop offset="100%" style="stop-color:#1a1a3e"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#e94560"/>
+      <stop offset="100%" style="stop-color:#ff6b81"/>
+    </linearGradient>
+    <linearGradient id="shield" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a4e"/>
+      <stop offset="100%" style="stop-color:#0f0f2e"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  
+  <rect width="800" height="300" rx="20" fill="url(#bg)"/>
+  
+  <!-- Shield icon -->
+  <g transform="translate(80, 30)">
+    <path d="M80 20 L160 55 L160 135 Q160 200 80 240 Q0 200 0 135 L0 55 Z" 
+          fill="url(#shield)" stroke="url(#accent)" stroke-width="4"/>
+    <!-- Checkmark -->
+    <path d="M45 125 L70 155 L115 95" fill="none" stroke="url(#accent)" stroke-width="8" 
+          stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
+    <!-- Inner ring -->
+    <circle cx="80" cy="130" r="40" fill="none" stroke="url(#accent)" stroke-width="1.5" opacity="0.3"/>
+  </g>
+  
+  <!-- Brand name -->
+  <text x="270" y="110" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" 
+        font-size="42" font-weight="700" fill="white" letter-spacing="2">
+    EVIDENCE<tspan fill="url(#accent)">|INTEGRITY</tspan>
+  </text>
+  
+  <!-- Tagline -->
+  <text x="272" y="145" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+        font-size="13" fill="#667788" letter-spacing="8" text-transform="uppercase">
+    FORENSIC FILE VALIDATION
+  </text>
+  
+  <!-- Subtitle -->
+  <text x="272" y="170" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+        font-size="10" fill="#445566" letter-spacing="3">
+    TRUST · VERIFY · PRESERVE
+  </text>
+  
+  <!-- Bottom bar -->
+  <rect x="270" y="185" width="300" height="1" fill="url(#accent)" opacity="0.5"/>
+  
+  <!-- Version -->
+  <text x="270" y="215" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+        font-size="9" fill="#334455" letter-spacing="2">PROFESSIONAL EDITION  ·  v1.0</text>
+</svg>

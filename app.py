@@ -32,7 +32,31 @@ except ImportError:
         Flask, render_template, request, jsonify, send_from_directory, session, redirect, url_for
     )
 
-app = Flask(__name__)
+# PyInstaller support: when frozen, resources live in sys._MEIPASS
+if getattr(sys, 'frozen', False):
+    BASE_DIR = Path(sys._MEIPASS)
+else:
+    BASE_DIR = Path(os.path.abspath(os.path.dirname(__file__)))
+
+# For frozen exe, use a writable directory outside MEIPASS for runtime data
+if getattr(sys, 'frozen', False):
+    RUNTIME_DIR = Path(os.path.expanduser("~/.evidence-validator"))
+else:
+    RUNTIME_DIR = BASE_DIR
+UPLOAD_DIR = RUNTIME_DIR / "uploads"
+REPORT_DIR = RUNTIME_DIR / "reports"
+OUTPUT_DIR = RUNTIME_DIR / "output"
+UPLOAD_DIR.mkdir(exist_ok=True, parents=True)
+REPORT_DIR.mkdir(exist_ok=True, parents=True)
+OUTPUT_DIR.mkdir(exist_ok=True, parents=True)
+
+# License file path
+LICENSE_FILE = str(RUNTIME_DIR / '.license')
+
+app = Flask(__name__,
+            template_folder=str(BASE_DIR / 'templates'),
+            static_folder=str(BASE_DIR / 'static'),
+            static_url_path='/static')
 app.secret_key = uuid.uuid4().hex
 
 # Inject license info into templates
@@ -42,19 +66,8 @@ def inject_license():
         "is_licensed": IS_LICENSED,
         "licensed_to": LICENSED_TO,
         "trial_max": TRIAL_MAX_FILES,
-        "app_version": "1.0.0",
+        "app_version": "1.1",
     }
-
-BASE_DIR = Path(os.path.abspath(os.path.dirname(__file__)))
-UPLOAD_DIR = BASE_DIR / "uploads"
-REPORT_DIR = BASE_DIR / "reports"
-OUTPUT_DIR = BASE_DIR / "output"
-UPLOAD_DIR.mkdir(exist_ok=True)
-REPORT_DIR.mkdir(exist_ok=True)
-OUTPUT_DIR.mkdir(exist_ok=True)
-
-# License system
-LICENSE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.license')
 
 # Demo mode: 3 file limit, unregistered watermark
 TRIAL_MAX_FILES = 3
@@ -380,7 +393,7 @@ def api_license_status():
 @app.route("/api/server_status", methods=["GET"])
 def api_server_status():
     return jsonify({
-        "version": "1.0.0",
+        "version": "1.1",
         "name": "Evidence Integrity Validator",
         "uptime": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
     })
@@ -398,4 +411,4 @@ if __name__ == "__main__":
 ║  Open this in your browser to get started        ║
 ╚══════════════════════════════════════════════════╝
     """)
-    app.run(host="127.0.0.1", port=port, debug=False, threaded=True)
+    app.run(host="0.0.0.0", port=port, debug=False, threaded=True)

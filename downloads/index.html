@@ -1,58 +1,58 @@
 <!DOCTYPE html>
 <html>
-<head><title>Download Evidence Validator</title>
+<head><title>Download EVIDENCE | INTEGRITY</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<link rel="manifest" href="/manifest.json">
 <style>
-body { font-family: -apple-system, sans-serif; background: #1a1a2e; color: #e0e0e0; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; }
-.card { background: #16213e; padding: 40px; border-radius: 16px; max-width: 500px; text-align: center; }
-h1 { color: #e94560; }
-h2 { color: #8899aa; font-size: 16px; margin: 20px 0 10px; }
-.btn { display: inline-block; padding: 16px 40px; background: #e94560; color: white; text-decoration: none; border-radius: 8px; font-size: 18px; font-weight: 600; margin: 10px 0; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: Arial, sans-serif; background: #f5f5f5; color: #333; }
+.header { background: #0f0f23; padding: 20px; text-align: center; }
+.header img { max-width: 90%; max-height: 100px; }
+.container { max-width: 700px; margin: 0 auto; padding: 20px; }
+.card { background: white; border-radius: 10px; padding: 24px; margin: 16px 0; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+h2 { font-size: 16px; color: #0f0f23; margin-bottom: 8px; }
+.btn { display: inline-block; padding: 14px 32px; background: #e94560; color: white; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 15px; margin: 6px 0; }
 .btn:hover { background: #d63850; }
-.btn-small { display: inline-block; padding: 10px 24px; background: #0f3460; color: white; text-decoration: none; border-radius: 8px; font-size: 14px; margin: 5px; }
-.btn-small:hover { background: #1a4a80; }
-.btn2 { display: inline-block; padding: 12px 30px; background: transparent; color: #8899aa; text-decoration: none; border-radius: 8px; font-size: 14px; border: 1px solid #334; margin: 8px; }
-.btn2:hover { color: white; border-color: #e94560; }
-.note { font-size: 12px; opacity: 0.5; margin-top: 10px; }
-hr { border: none; border-top: 1px solid #223; margin: 20px 0; }
-.platform { margin: 15px 0; }
+.btn-sm { display: inline-block; padding: 8px 20px; background: #0f0f23; color: white; text-decoration: none; border-radius: 6px; font-size: 12px; margin: 3px; }
+.btn-sm:hover { background: #1a1a3e; }
+.link { color: #e94560; text-decoration: none; font-size: 14px; }
+.link:hover { text-decoration: underline; }
+.note { font-size: 11px; color: #999; margin-top: 4px; }
+hr { border: none; border-top: 1px solid #eee; margin: 16px 0; }
+.platform { margin: 12px 0; }
 </style>
 </head>
 <body>
+<div class="header">
+<img src="logo_professional.png" alt="EVIDENCE | INTEGRITY">
+</div>
+<div class="container">
+<div class="card" style="text-align:center;">
+<p style="color:#666;margin-bottom:12px;">Professional Forensic File Integrity Validator</p>
+<a class="btn" href="EvidenceValidator.exe" download>Download for Windows (11 MB)</a>
+<p class="note">SHA256: 40638c616f97f56a636050074839d0eb2ca6694400400e191291f576e295dba9
+</div>
+
 <div class="card">
-<h1>⚖️ Evidence Integrity Validator</h1>
-<p>Version 1.0 | Offline</p>
-
-<hr>
-
-<div class="platform">
-<h2>💻 Windows</h2>
-<a class="btn-small" href="EvidenceValidator.exe" download>⬇️ Download .exe (20 MB)</a>
+<h2>Documentation</h2>
+<a class="link" href="manual.pdf">User Manual (PDF)</a><br>
+<a class="link" href="Evidence_Validator_Brochure.pdf">Sales Brochure (PDF)</a>
 </div>
 
-<div class="platform">
-<h2>🍎 macOS</h2>
-<a class="btn-small" href="#" onclick="alert('macOS build coming soon from GitHub Actions!'); return false;">⬇️ Download .app</a>
-<p class="note">Or run: python3 app.py (requires Python)</p>
+<div class="card">
+<h2>Other Platforms</h2>
+<div class="platform"><b>macOS</b> — <a class="link" href="https://github.com/ibbiy/evidence-validator/actions">Download from GitHub Actions</a></div>
+<div class="platform"><b>iPhone / iPad</b> — Open this page in Safari -> Share -> <b>Add to Home Screen</b></div>
+<div class="platform"><b>Android</b> — Open in Chrome -> Menu -> <b>Add to Home screen</b></div>
 </div>
 
-<div class="platform">
-<h2>📱 iPhone / iPad</h2>
-<p style="font-size:14px;color:#8899aa;">This app works as a PWA.</p>
-<p style="font-size:13px;color:#667;">Open this page → Safari Share →<br><strong>"Add to Home Screen"</strong></p>
+<div class="card" style="text-align:center;background:#fef2f2;border:1px solid #e94560;">
+<h2>Purchase License</h2>
+<p style="font-size:13px;color:#555;">Professional License: <b>£39.99</b> — Lifetime, no subscription</p>
+<p style="font-size:13px;color:#555;">Email: <a class="link" href="mailto:ibbiy@icloud.com"><b>ibbiy@icloud.com</b></a></p>
 </div>
-
-<div class="platform">
-<h2>🤖 Android</h2>
-<p style="font-size:13px;color:#667;">Open in Chrome → Menu →<br><strong>"Add to Home screen"</strong></p>
 </div>
-
-<hr>
-
-<a class="btn2" href="manual.pdf" target="_blank">📖 User Manual (PDF)</a>
-<p class="note">Free trial: 3 files · Purchase: Email ibbiy@icloud.com</p>
-</div>
+<footer style="text-align:center;padding:20px;font-size:10px;color:#999;">
+EVIDENCE | INTEGRITY Professional Edition v1.0 &copy; 2026
+</footer>
 </body>
 </html>
